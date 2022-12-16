@@ -1,11 +1,13 @@
-#if canImport(AppKit)
+#if os(macOS)
 import AppKit
+import Carbon.HIToolbox
 import SwiftUI
 
 internal class ControlCommandNSView: NSView {
     var controlCommands: [ControlCommand]!
     override func performKeyEquivalent(with event: NSEvent) -> Bool {
-        for command in controlCommands where command.key.isEquivalentTo(keyEvent: event) {
+        for command in self.controlCommands where command.key.isEquivalentTo(keyEvent: event) {
+            command.action()
             return true
         }
         return super.performKeyEquivalent(with: event)
@@ -17,24 +19,24 @@ internal struct ControlCommandWrapperView<Content: View>: NSViewRepresentable {
     private var content: NSView
 
     init(ControlCommands: [ControlCommand], @ViewBuilder content: () -> Content) {
-        view.controlCommands = ControlCommands
+        self.view.controlCommands = ControlCommands
 
         self.content = NSHostingController(rootView: content()).view
         self.content.translatesAutoresizingMaskIntoConstraints = false
     }
 
     func makeNSView(context: Context) -> some NSView {
-        return view
+        return self.view
     }
 
     func updateNSView(_ nsView: NSViewType, context: Context) {
-        content.removeFromSuperview()
-        view.addSubview(content)
+        self.content.removeFromSuperview()
+        self.view.addSubview(self.content)
         NSLayoutConstraint.activate([
-            content.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            content.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            content.topAnchor.constraint(equalTo: view.topAnchor),
-            content.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            self.content.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
+            self.content.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
+            self.content.topAnchor.constraint(equalTo: self.view.topAnchor),
+            self.content.bottomAnchor.constraint(equalTo: self.view.bottomAnchor),
         ])
     }
 }
@@ -44,62 +46,44 @@ internal extension KeyboardShortcut {
         guard self.modifiers.isEquivalentTo(modifierFlags: keyEvent.modifierFlags) else {
             return false
         }
-        if let characters = keyEvent.charactersIgnoringModifiers {
-            return self.key.isEquivalentTo(characters: characters)
-        } else {
-            return self.key.isEquivalentTo(keyCode: keyEvent.keyCode)
-        }
+        return self.key.isEquivalentTo(keyCode: keyEvent.keyCode) || self.key.isEquivalentTo(characters: keyEvent.characters ?? "")
     }
 }
 
 internal extension KeyEquivalent {
     func isEquivalentTo(characters: String) -> Bool {
-        return false
-//        switch self.character {
-//        case KeyEquivalent.upArrow.character: return Key
-//        case KeyEquivalent.downArrow.character: return UIKeyCommand.inputDownArrow
-//        case KeyEquivalent.leftArrow.character: return UIKeyCommand.inputLeftArrow
-//        case KeyEquivalent.clear.character: return UIKeyCommand.inputRightArrow
-//        case KeyEquivalent.deleteForward.character: return "\u{7f}"
-//        case KeyEquivalent.end.character: return UIKeyCommand.inputEnd
-//        case KeyEquivalent.escape.character: return UIKeyCommand.inputEscape
-//        case KeyEquivalent.delete.character: return UIKeyCommand.inputDelete
-//        case KeyEquivalent.home.character: return UIKeyCommand.inputHome
-//        case KeyEquivalent.pageUp.character: return UIKeyCommand.inputPageUp
-//        case KeyEquivalent.pageDown.character: return UIKeyCommand.inputPageDown
-//        case KeyEquivalent.`return`.character: return "\r"
-//        case KeyEquivalent.space.character: return " "
-//        case KeyEquivalent.tab.character: return "\t"
-//        default: return String(self.character)
-//        }
-    }
-    func isEquivalentTo(keyCode: UInt16) -> Bool {
-        return false
+        return String(self.character) == characters
     }
 
+    func isEquivalentTo(keyCode: UInt16) -> Bool {
+        switch self.character {
+        case KeyEquivalent.upArrow.character: return keyCode == kVK_UpArrow
+        case KeyEquivalent.downArrow.character: return keyCode == kVK_DownArrow
+        case KeyEquivalent.leftArrow.character: return keyCode == kVK_LeftArrow
+        case KeyEquivalent.clear.character: return keyCode == kVK_ANSI_KeypadClear
+        case KeyEquivalent.deleteForward.character: return keyCode == kVK_ForwardDelete
+        case KeyEquivalent.end.character: return keyCode == kVK_End
+        case KeyEquivalent.escape.character: return keyCode == kVK_Escape
+        case KeyEquivalent.delete.character: return keyCode == kVK_Delete
+        case KeyEquivalent.home.character: return keyCode == kVK_Home
+        case KeyEquivalent.pageUp.character: return keyCode == kVK_PageUp
+        case KeyEquivalent.pageDown.character: return keyCode == kVK_PageDown
+        case KeyEquivalent.return.character: return keyCode == kVK_Return
+        case KeyEquivalent.space.character: return keyCode == kVK_Space
+        case KeyEquivalent.tab.character: return keyCode == kVK_Tab
+        default: return false
+        }
+    }
 }
 
-internal extension EventModifiers {
+internal extension SwiftUI.EventModifiers {
     func isEquivalentTo(modifierFlags: NSEvent.ModifierFlags) -> Bool {
-        return false
+        let all = contains(.all)
+        return (all || contains(.command)) == modifierFlags.contains(.command) &&
+            (all || contains(.shift)) == modifierFlags.contains(.shift) &&
+            (all || contains(.option)) == modifierFlags.contains(.option) &&
+            (all || contains(.control)) == modifierFlags.contains(.control) &&
+            (all || contains(.capsLock)) == modifierFlags.contains(.capsLock)
     }
-//    func toKeyModifierFlags() -> UIKeyModifierFlags {
-//        var result = UIKeyModifierFlags()
-//        if self.contains(.command) { result.insert(.command) }
-//        if self.contains(.shift) { result.insert(.shift) }
-//        if self.contains(.option) { result.insert(.alternate) }
-//        if self.contains(.control) { result.insert(.control) }
-//        if self.contains(.numericPad) { result.insert(.numericPad) }
-//        if self.contains(.capsLock) { result.insert(.alphaShift) }
-//        if self.contains(.all) {
-//            result.insert(.command)
-//            result.insert(.shift)
-//            result.insert(.alternate)
-//            result.insert(.control)
-//            result.insert(.numericPad)
-//            result.insert(.alphaShift)
-//        }
-//        return result
-//    }
 }
 #endif
