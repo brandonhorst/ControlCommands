@@ -89,22 +89,10 @@ struct CommandLine {
 
 ## Running Tests
 
-Because the majority of this library runs at the intersection of SwiftUI and AppKit/UIKit, it's tested using XCode UI Tests in the included `TestApp`.
-
-These tests can be run on Mac and Mac Catalyst because iOS and iPadOS do not support the `XCUIElement.typeKey` function (even though the docs say iPadOS should). The TestApp can be tested manually in the simulator.
+Because the majority of this library runs at the intersection of SwiftUI and AppKit/UIKit, it includes XCode UI Tests in the included `TestApp`. It can be also be tested manually in the simulator.
 
 You can run the tests with
 
 ```sh
-xcodebuild -project TestApp/TestApp.xcodeproj -scheme TestApp \
- -destination 'platform=macOS,arch=arm64' clean test
- 
-xcodebuild -project TestApp/TestApp.xcodeproj -scheme TestApp \
- -destination 'platform=macOS,arch=x86_64' clean test
- 
-xcodebuild -project TestApp/TestApp.xcodeproj -scheme TestApp \
- -destination 'platform=macOS,variant=Mac Catalyst,arch=arm64' test
- 
-xcodebuild -project TestApp/TestApp.xcodeproj -scheme TestApp \
- -destination 'platform=macOS,variant=Mac Catalyst,arch=x86_64' test
+make test
 ```
