@@ -3,16 +3,16 @@ import UIKit
 import SwiftUI
 
 internal class ControlCommandUIView: UIView {
-    var ControlCommands: [ControlCommand]!
+    var controlCommands: [ControlCommand]!
     
     @objc func executeCommand(sender: UIKeyCommand) {
         if let index = sender.propertyList as? Int {
-            ControlCommands[index].action()
+            controlCommands[index].action()
         }
     }
 
     override var keyCommands: [UIKeyCommand]? {
-        return ControlCommands.enumerated().compactMap {index, command in
+        return controlCommands.enumerated().compactMap {index, command in
             guard let input = command.key.key.toKeyCommandCharacter() else {
                 return nil
             }
@@ -27,8 +27,8 @@ internal struct ControlCommandWrapperView<Content: View>: UIViewRepresentable {
     private let view = ControlCommandUIView(frame: .zero)
     private var content: UIView
     
-    init(ControlCommands: [ControlCommand], @ViewBuilder content: () -> Content) {
-        view.ControlCommands = ControlCommands
+    init(controlCommands: [ControlCommand], @ViewBuilder content: () -> Content) {
+        view.controlCommands = controlCommands
         
         self.content = UIHostingController(rootView: content()).view
         self.content.translatesAutoresizingMaskIntoConstraints = false

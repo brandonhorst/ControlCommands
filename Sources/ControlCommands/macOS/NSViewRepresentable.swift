@@ -18,8 +18,8 @@ internal struct ControlCommandWrapperView<Content: View>: NSViewRepresentable {
     private let view = ControlCommandNSView(frame: .zero)
     private var content: NSView
 
-    init(ControlCommands: [ControlCommand], @ViewBuilder content: () -> Content) {
-        self.view.controlCommands = ControlCommands
+    init(controlCommands: [ControlCommand], @ViewBuilder content: () -> Content) {
+        self.view.controlCommands = controlCommands
 
         self.content = NSHostingController(rootView: content()).view
         self.content.translatesAutoresizingMaskIntoConstraints = false

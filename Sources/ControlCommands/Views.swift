@@ -2,15 +2,15 @@ import SwiftUI
 
 public extension View {
     func controlCommands(_ content: @escaping () -> ControlCommands) -> some View {
-        modifier(ControlCommandViewModifier(ControlCommands: content))
+        modifier(ControlCommandViewModifier(controlCommands: content))
     }
 }
 
 internal struct ControlCommandViewModifier: ViewModifier {
-    var ControlCommands: () -> ControlCommands
+    var controlCommands: () -> ControlCommands
     
     func body(content: Content) -> some View {
-        ControlCommandWrapperView(ControlCommands: ControlCommands().body) {
+        ControlCommandWrapperView(controlCommands: controlCommands().body) {
             content
         }
     }
