@@ -30,7 +30,7 @@ jobs:
       # - name: Package Catalyst x86 tests
       #   run: xcodebuild test -scheme ControlCommands -destination 'platform=macOS,variant=Mac Catalyst,arch=x86_64'
       - name: Package iPadOS tests
-        run: xcodebuild test -scheme ControlCommands -destination 'platform=iOS Simulator,name=iPad (10th generation)'
+        run: xcodebuild test -scheme ControlCommands -destination 'platform=iOS Simulator,name=iPad (9th generation)'
       - name: Package iOS tests
         run: xcodebuild test -scheme ControlCommands -destination 'platform=iOS Simulator,name=iPhone 14'
 
