@@ -17,41 +17,19 @@ jobs:
       - uses: actions/checkout@v3
       - name: Build
         run: swift build -v
+      - name: Test
+        run: swift test -v
 
-      - name: Package Mac tests
-        run: xcodebuild test -scheme ControlCommands -destination 'platform=macOS' | xcpretty && exit ${PIPESTATUS[0]}
-      # Github actions does not support arm64
-      # - name: Package Mac arm tests
-      #   run: xcodebuild test -scheme ControlCommands -destination 'platform=macOS,arch=arm64'
-      # - name: Package Mac x86 tests
-      #   run: xcodebuild test -scheme ControlCommands -destination 'platform=macOS,arch=x86_64' | xcpretty && exit ${PIPESTATUS[0]}
+      # - name: Package Mac tests
+      #   run: xcodebuild test -scheme ControlCommands -destination 'platform=macOS' | xcpretty && exit ${PIPESTATUS[0]}
+      # - name: Package Catalyst tests
+      #   run: xcodebuild test -scheme ControlCommands -destination 'platform=macOS,variant=Mac Catalyst' | xcpretty && exit ${PIPESTATUS[0]}
+      # - name: Package iPadOS tests
+      #   run: xcodebuild test -scheme ControlCommands -destination 'platform=iOS Simulator,name=iPad (9th generation)' | xcpretty && exit ${PIPESTATUS[0]}
+      # - name: Package iOS tests
+      #   run: xcodebuild test -scheme ControlCommands -destination 'platform=iOS Simulator,name=iPhone 14' | xcpretty && exit ${PIPESTATUS[0]}
 
-      - name: Package Catalyst tests
-        run: xcodebuild test -scheme ControlCommands -destination 'platform=macOS,variant=Mac Catalyst' | xcpretty && exit ${PIPESTATUS[0]}
-      # Github actions does not support arm64
-      # - name: Package Mac arm tests
-      #   run: xcodebuild test -scheme ControlCommands -destination 'platform=macOS,variant=Mac Catalyst,arch=arm64' | xcpretty && exit ${PIPESTATUS[0]}
-      # - name: Package Catalyst x86 tests
-      #   run: xcodebuild test -scheme ControlCommands -destination 'platform=macOS,variant=Mac Catalyst,arch=x86_64' | xcpretty && exit ${PIPESTATUS[0]}
-
-      - name: Package iPadOS tests
-        run: xcodebuild test -scheme ControlCommands -destination 'platform=iOS Simulator,name=iPad (9th generation)' | xcpretty && exit ${PIPESTATUS[0]}
-
-      - name: Package iOS tests
-        run: xcodebuild test -scheme ControlCommands -destination 'platform=iOS Simulator,name=iPhone 14' | xcpretty && exit ${PIPESTATUS[0]}
-
-      - name: UI Mac tests
-        run: xcodebuild test -project TestApp/TestApp.xcodeproj -scheme TestApp -destination 'platform=macOS' | xcpretty && exit ${PIPESTATUS[0]}
-      # Github actions does not support arm64
-      # - name: UI Mac arm tests
-      #   run: xcodebuild test  -project TestApp/TestApp.xcodeproj -scheme TestApp -destination 'platform=macOS,arch=arm64' | xcpretty && exit ${PIPESTATUS[0]}
-      # - name: UI Mac x86 tests
-      #   run: xcodebuild test -project TestApp/TestApp.xcodeproj -scheme TestApp -destination 'platform=macOS,arch=x86_64' | xcpretty && exit ${PIPESTATUS[0]}
-
-      - name: UI Catalyst x86 tests
-        run: xcodebuild test -project TestApp/TestApp.xcodeproj -scheme TestApp -destination 'platform=macOS,variant=Mac Catalyst' | xcpretty && exit ${PIPESTATUS[0]}
-      # Github actions does not support arm64
-      # - name: UI Catalyst arm test
-      #   run: xcodebuild test -project TestApp/TestApp.xcodeproj -scheme TestApp -destination 'platform=macOS,variant=Mac Catalyst,arch=arm64' | xcpretty && exit ${PIPESTATUS[0]}
-      # - name: UI Catalyst x86 tests
-      #   run: xcodebuild test -project TestApp/TestApp.xcodeproj -scheme TestApp -destination 'platform=macOS,variant=Mac Catalyst,arch=x86_64' | xcpretty && exit ${PIPESTATUS[0]}
+      # - name: UI Mac tests
+      #   run: xcodebuild test -project TestApp/TestApp.xcodeproj -scheme TestApp -destination 'platform=macOS' | xcpretty && exit ${PIPESTATUS[0]}
+      # - name: UI Catalyst tests
+      #   run: xcodebuild test -project TestApp/TestApp.xcodeproj -scheme TestApp -destination 'platform=macOS,variant=Mac Catalyst' | xcpretty && exit ${PIPESTATUS[0]}
